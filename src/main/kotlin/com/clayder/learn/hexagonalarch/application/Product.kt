@@ -3,6 +3,10 @@ package com.clayder.learn.hexagonalarch.application
 const val DISABLED = "DISABLED"
 const val ENABLED = "ENABLED"
 
+private const val PRICE_GREATER_THAN_ZERO = "The price must be greater than zero to enable the product"
+
+private const val ERROR_DISABLED_PRODUCT = "The price must be zero or null to have the product disabled"
+
 data class Product(
     private var id: String = "",
     private var name: String? = null,
@@ -16,13 +20,16 @@ data class Product(
 
     override fun enable() = price?.let {
         if (it <= 0) {
-            throw Exception("The price must be grater than zero to enable the product")
+            throw Exception(PRICE_GREATER_THAN_ZERO)
         }
-        this.status = ENABLED
-    } ?: throw Exception("The price must be grater than zero to enable the product")
+        status = ENABLED
+    } ?: throw Exception(PRICE_GREATER_THAN_ZERO)
 
     override fun disable() {
-        TODO("Not yet implemented")
+        if(price != null && price != 0f ) {
+            throw Exception(ERROR_DISABLED_PRODUCT)
+        }
+        status = DISABLED
     }
 
     override fun getId(): String {
