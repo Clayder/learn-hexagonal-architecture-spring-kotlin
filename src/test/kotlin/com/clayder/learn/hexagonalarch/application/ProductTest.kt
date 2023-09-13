@@ -2,7 +2,7 @@ package com.clayder.learn.hexagonalarch.application
 
 import com.clayder.learn.hexagonalarch.mock.ProductMock
 import org.junit.jupiter.api.Assertions
-import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.Arguments
@@ -16,6 +16,18 @@ class ProductTest {
         product.enable()
 
         assertEquals(ENABLED, product.getStatus())
+    }
+
+    @ParameterizedTest
+    @MethodSource("productsWithInvalidData")
+    fun `Return false for products with invalid data`(product: Product) {
+        assertFalse(product.isValid())
+    }
+
+    @ParameterizedTest
+    @MethodSource("productsWithValidData")
+    fun `Validate product with success`(product: Product) {
+        assertTrue(product.isValid())
     }
 
     @ParameterizedTest
@@ -54,6 +66,19 @@ class ProductTest {
         fun productsWithPriceNullOrZero() = listOf(
             Arguments.of(ProductMock().withPriceNull().build()),
             Arguments.of(ProductMock().withPriceZero().build()),
+        )
+
+        @JvmStatic
+        fun productsWithInvalidData() = listOf(
+            Arguments.of(ProductMock().withPriceNull().build()),
+            Arguments.of(ProductMock().withNegativePrice().build()),
+            Arguments.of(ProductMock().withInvalidStatus().build())
+        )
+
+        @JvmStatic
+        fun productsWithValidData() = listOf(
+            Arguments.of(ProductMock().build()),
+            Arguments.of(ProductMock().withEmptyStatus().build()),
         )
     }
 }
